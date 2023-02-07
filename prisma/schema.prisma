@@ -24,6 +24,14 @@ model Character {
   gender String
 }
 
+model Page {
+    id    String @id @default(auto()) @map("_id") @db.ObjectId
+    count Int
+    pages Int
+    next  String?
+    prev  String?
+}
+
 enum Role {
   USER
   ADMIN

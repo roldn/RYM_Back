@@ -1,31 +1,79 @@
-import { Character, characters } from "../model/characters";
+import { PrismaClient } from "@prisma/client";
+import { Character } from "../model/characters";
 
-export const getAll = async (): Promise<Character[]> => {
-    return characters;
-  };
+const prisma = new PrismaClient()
 
-export const create = async (character:Character): Promise<void> => { 
-    characters.push(character);  
+//CRUD Operations
+export const getSet = async (): Promise<Character[]> => {
+    const results: Character[] = await prisma.character.findMany()
+    console.log(results)
+
+    return results
+};
+
+export const create = async (character: Character): Promise<void> => {
+    const create = await prisma.character.create({
+        data: {
+            name: character.name,
+            gender: character.gender,
+            status: character.status
+        }
+    });
+    console.log(create)
 }
 
-export const update = async (character:Character): Promise<void> => { 
-    let index = characters.findIndex(d => d.id === character['id']);
-    if(index >0 || index==0)
-   {
-    characters[index]['name'] = character['name'];
-    characters[index]['status'] = character['status'];
-    characters[index]['specie'] = character['specie'];
-    characters[index]['gender'] = character['gender'];
-    characters[index]['image'] = character['image'];
-    characters[index]['url'] = character['url'];
-   }
+export const update = async (character: Character): Promise<void> => {
+    const updateCharacter = await prisma.character.updateMany({
+        where: {
+            id: {
+                contains: `${character.id}`,
+            },
+        },
+        data: { ...character },
+    })
 }
 
-export const remove = async (id:number): Promise<void> => { 
-    console.log(`in delete character index is ${JSON.stringify(id)}`)
-    let index = characters.findIndex(d => d.id === id);
-    console.log(`in delete character index is ${index}`)
-    if(index >0 || index==0)
-    characters.splice(index, 1);
-    
+export const remove = async (id_character: string): Promise<void> => {
+    const deleteCharacter = await prisma.character.delete({
+        where: {
+            id: id_character,
+        },
+    })
 }
+
+//Filter Operations
+// export const filterBy = async (character:Character, next:number): Promise<Character[]> => {
+
+//     async function main() {
+
+//         await prisma.$connect()
+
+//         const results = await prisma.character.findMany({
+//             skip: next,
+//             take: 8,
+//             where: {
+//                 email: {
+//                     contains: 'Prisma',
+//                 },
+//             },
+//             orderBy: {
+//                 name: 'desc',
+//             },
+//         })
+
+//         //     const characters = await prisma.character.findMany();
+//         //     console.log(characters)
+
+//         return results
+//     }
+
+//     main().then(
+//         async () => {
+//             await prisma.$disconnect()
+//         }
+//     ).catch(async (e) => {
+//         console.error(e)
+//         await prisma.$disconnect()
+//         process.exit(1)
+//     })
+// };

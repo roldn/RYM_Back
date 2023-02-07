@@ -1,9 +1,8 @@
 import * as Service from "../service/index"
 import { Character } from '../model/characters';
 
-export const getAll = async (req: any, res: any) => {
-  const characterList: Character[] = await Service.getAll();
-  console.log(`in get ${JSON.stringify(characterList)}`)
+export const getSet = async (req: number, res: any) => {
+  const characterList: Character[] = await Service.getSet();
   try {
     res.status(200).send(
       characterList);
@@ -41,7 +40,7 @@ export const update = async (req: any, res: any) => {
 };
 
 export const remove = async (req: any, res: any) => {
-  const characterId: number = req.body['id'];
+  const characterId: string = req.body['id'];
   await Service.remove(characterId);
   try {
     res.status(200).send({
