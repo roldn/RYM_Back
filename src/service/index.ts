@@ -4,76 +4,49 @@ import { Character } from "../model/characters";
 const prisma = new PrismaClient()
 
 //CRUD Operations
-export const getSet = async (): Promise<Character[]> => {
-    const results: Character[] = await prisma.character.findMany()
-    console.log(results)
-
+export const getAll = async (req: any): Promise<Character[]> => {
+    const results: Character[] = await prisma.character.findMany({
+        skip: parseInt(req.query.page) * 2,
+        take: 2,
+    });
     return results
 };
+
+export const filter = async (req: any): Promise<Character[]> => {
+    const page: number = req.query.page;
+    delete req.query.page;
+    const results: Character[] = await prisma.character.findMany({
+        skip: page * 2,
+        take: 2,
+        where: { ...req.query }
+    });
+    return results
+}
 
 export const create = async (character: Character): Promise<void> => {
     const create = await prisma.character.create({
         data: {
             name: character.name,
             gender: character.gender,
-            status: character.status
+            status: character.status,
+            image: character.image
         }
     });
-    console.log(create)
 }
 
-export const update = async (character: Character): Promise<void> => {
-    const updateCharacter = await prisma.character.updateMany({
+export const update = async (selectedId: number, updatedCharacter: Character): Promise<void> => {
+    const updateCharacter = await prisma.character.update({
         where: {
-            id: {
-                contains: `${character.id}`,
-            },
+            id: selectedId
         },
-        data: { ...character },
+        data: { ...updatedCharacter },
     })
 }
 
-export const remove = async (id_character: string): Promise<void> => {
+export const remove = async (id_character: number): Promise<void> => {
     const deleteCharacter = await prisma.character.delete({
         where: {
             id: id_character,
         },
     })
 }
-
-//Filter Operations
-// export const filterBy = async (character:Character, next:number): Promise<Character[]> => {
-
-//     async function main() {
-
-//         await prisma.$connect()
-
-//         const results = await prisma.character.findMany({
-//             skip: next,
-//             take: 8,
-//             where: {
-//                 email: {
-//                     contains: 'Prisma',
-//                 },
-//             },
-//             orderBy: {
-//                 name: 'desc',
-//             },
-//         })
-
-//         //     const characters = await prisma.character.findMany();
-//         //     console.log(characters)
-
-//         return results
-//     }
-
-//     main().then(
-//         async () => {
-//             await prisma.$disconnect()
-//         }
-//     ).catch(async (e) => {
-//         console.error(e)
-//         await prisma.$disconnect()
-//         process.exit(1)
-//     })
-// };

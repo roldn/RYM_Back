@@ -2,7 +2,7 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 datasource db {
-  provider = "mongodb"
+  provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
@@ -11,25 +11,27 @@ generator client {
 }
 
 model User {
-  id     String @id @default(auto()) @map("_id") @db.ObjectId
-  name   String?
-  email  String   @unique
-  role   Role     @default(USER)
-  }
+  id       Int     @id @default(autoincrement())
+  name     String? @db.VarChar(50)
+  email    String  @unique @db.VarChar(50)
+  password String  @unique @db.VarChar(255)
+  role     Role    @default(USER)
+}
 
 model Character {
-  id     String @id @default(auto()) @map("_id") @db.ObjectId
-  name   String
-  status String
-  gender String
+  id     Int    @id @unique @default(autoincrement())
+  name   String @db.VarChar(50)
+  status String @db.VarChar(7)
+  gender String @db.VarChar(10)
+  image String @db.VarChar(255)
 }
 
 model Page {
-    id    String @id @default(auto()) @map("_id") @db.ObjectId
-    count Int
-    pages Int
-    next  String?
-    prev  String?
+  id    Int     @id @default(autoincrement())
+  count Int
+  pages Int 
+  next  String? @db.VarChar(255)
+  prev  String? @db.VarChar(255)
 }
 
 enum Role {

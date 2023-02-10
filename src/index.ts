@@ -2,7 +2,7 @@ import cors from 'cors';
 import express from 'express';
 import * as dotenv from "dotenv";
 import helmet from "helmet";
-import * as crud from '../src/router/character-crud';
+import * as crud from './controllers/character-crud';
 
 dotenv.config();
 
@@ -28,7 +28,7 @@ app.get('/', (req, res) => res.send('Welcome to NodeJs App using TypeScript'));
 
 app.get('/characters', crud.getSet);
 app.post('/create', crud.create);
-app.put('/uptade', crud.update);
-app.delete('/remove', crud.remove);
+app.put('/update/:id', crud.update);
+app.delete('/remove/:id', crud.remove);
 
 
