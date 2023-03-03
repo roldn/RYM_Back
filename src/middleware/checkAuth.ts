@@ -23,7 +23,8 @@ const checkLogin: RequestHandler = (req, res, next) => {
         if (!user) throw new Error("invalid user")
         console.log("decoded", payload)
 
-        res.locals.user = user
+        res.locals.user = user;
+        res.locals.user.password = undefined;
 
         next();
     } catch (err) {

@@ -55,7 +55,8 @@ export const getCharaterList: RequestHandler = async (req, res) => {
 export const create: RequestHandler = async (req, res) => {
   try {
     const file = req.file;
-    const imageName = file!.filename;
+    const imageName = file!.originalname;
+    // console.log(imageName)
 
     const character: Character = req.body;
 
@@ -104,6 +105,22 @@ export const remove: RequestHandler = async (req, res) => {
     });
   } catch (err) {
     console.log("Line 114, 'remove' controller, 'characterControllers' folder")
+    const error = err as { message?: string }
+    res.status(400).json({ message: error?.message })
+  }
+};
+
+export const getById: RequestHandler = async (req, res) => {
+  try {
+
+    const id = Number(req.params.id);
+    
+    const character = await Service.getSingleCharacterById(id);
+    console.log(...character)
+
+    res.status(200).send(character);
+  } catch (err) {
+    console.log("Line 121, 'getById' controller, 'characterControllers' folder")
     const error = err as { message?: string }
     res.status(400).json({ message: error?.message })
   }
